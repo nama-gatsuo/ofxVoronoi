@@ -45,14 +45,14 @@ void ofxVoronoi::generate(bool ordered) {
                 
                 // Get the current point of the cell
                 double* currentPoint = con->p[vl->ij]+con->ps*vl->q;
-                newCell.pt = ofPoint(currentPoint[0], currentPoint[1]);
+                newCell.pt = vec3(currentPoint[0], currentPoint[1], 0);
                 
                 // Get the edgepoints of the cell
                 do {
                     float x = currentPoint[0] + 0.5 * conCell.pts[2*k];
                     float y = currentPoint[1] + 0.5 * conCell.pts[2*k+1];
                     
-                    ofPoint pt = ofPoint(x, y);
+                    vec3 pt = vec3(x, y, 0);
                     newCell.pts.push_back(pt);
                     
                     k = conCell.ed[2*k];
@@ -111,7 +111,7 @@ void ofxVoronoi::draw() {
 }
 
 //--------------------------------------------------------------
-bool ofxVoronoi::isBorder(ofPoint _pt){
+bool ofxVoronoi::isBorder(const vec3& _pt){
     return (_pt.x == bounds.x || _pt.x == bounds.x+bounds.width
             || _pt.y == bounds.y || _pt.y == bounds.y+bounds.height);
 }
@@ -122,48 +122,49 @@ void ofxVoronoi::setBounds(ofRectangle _bounds) {
 }
 
 //--------------------------------------------------------------
-void ofxVoronoi::setPoints(vector<ofPoint> _points) {
+void ofxVoronoi::setPoints(const vector<vec3>& _points) {
     clear();
     
     points = _points;
 }
 
 //--------------------------------------------------------------
-void ofxVoronoi::addPoint(ofPoint _point) {
+void ofxVoronoi::addPoint(const vec3& _point) {
     points.push_back(_point);
 }
 
 //--------------------------------------------------------------
-void ofxVoronoi::addPoints(vector<ofPoint> _points) {
-    for(std::vector<ofPoint>::iterator it=_points.begin(); it!=_points.end(); ++it) {
-        addPoint(*it);
-    }
+void ofxVoronoi::addPoints(const vector<vec3>& _points) {
+	for (auto& p : _points) {
+		addPoint(p);
+	}
 }
 
 //--------------------------------------------------------------
-ofRectangle ofxVoronoi::getBounds() {
+const ofRectangle& ofxVoronoi::getBounds() const {
     return bounds;
 }
 
 //--------------------------------------------------------------
-vector<ofPoint>& ofxVoronoi::getPoints() {
+const vector<vec3>& ofxVoronoi::getPoints() const {
     return points;
 }
 
 //--------------------------------------------------------------
-vector <ofxVoronoiCell>& ofxVoronoi::getCells() {
+const vector <ofxVoronoiCell>& ofxVoronoi::getCells() const {
     return cells;
 }
 
 
 //https://en.wikipedia.org/wiki/Lloyd%27s_algorithm
 void ofxVoronoi::relax(){
-    vector<ofPoint> relaxPts;
+
+    vector<vec3> relaxPts;
     for(int i=0; i<cells.size(); i++) {
         ofPolyline p;
         p.addVertices(cells[i].pts);
         p.close();
-        ofPoint centroid = p.getCentroid2D();
+        vec3 centroid = p.getCentroid2D();
         relaxPts.push_back(centroid);
     }
     clear();
@@ -172,12 +173,12 @@ void ofxVoronoi::relax(){
 };
 
 //--------------------------------------------------------------
-ofxVoronoiCell& ofxVoronoi::getCell(ofPoint _point, bool approximate) {
+const ofxVoronoiCell& ofxVoronoi::getCell(const vec3& _point, bool approximate) {
     if(approximate) {
         ofxVoronoiCell& nearestCell = cells[0];
         float nearestDistance = numeric_limits<float>::infinity();
         for(ofxVoronoiCell& cell : cells) {
-            float distance = _point.squareDistance(cell.pt);
+            float distance = glm::distance2(_point, cell.pt);
             if(distance < nearestDistance) {
                 nearestDistance = distance;
                 nearestCell = cell;

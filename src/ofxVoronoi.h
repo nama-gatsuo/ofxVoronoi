@@ -3,16 +3,18 @@
 // openFrameworks
 #include "ofMain.h"
 
+using namespace glm;
+
 class ofxVoronoiCell {
-  public:
-    vector<ofPoint> pts;
-    ofPoint pt;
+public:
+    vector<vec3> pts;
+    vec3 pt;
 };
 
 class ofxVoronoi {
 private:
     ofRectangle bounds;
-    vector<ofPoint> points;
+    vector<vec3> points;
     vector<ofxVoronoiCell> cells;
     
 public:
@@ -23,17 +25,17 @@ public:
     void generate(bool ordered=true);
     void draw();
     
-    bool isBorder(ofPoint _pt);
+    bool isBorder(const vec3& _pt);
     
     void setBounds(ofRectangle _bounds);
-    void setPoints(vector<ofPoint> _points);
-    void addPoint(ofPoint _point);
-    void addPoints(vector<ofPoint> _points);
+    void setPoints(const vector<vec3>& _points);
+    void addPoint(const vec3& _point);
+    void addPoints(const vector<vec3>& _points);
     
-    ofRectangle getBounds();
-    vector<ofPoint>& getPoints();
-    vector <ofxVoronoiCell>& getCells();
-    ofxVoronoiCell& getCell(ofPoint _point, bool approximate=false);
+    const ofRectangle& getBounds() const;
+	const vector<vec3>& getPoints() const;
+	const vector<ofxVoronoiCell>& getCells() const;
+	const ofxVoronoiCell& getCell(const vec3& _point, bool approximate=false);
     
     //borg
     void relax();
