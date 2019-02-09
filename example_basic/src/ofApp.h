@@ -5,9 +5,9 @@
 
 class ofApp : public ofBaseApp{
     private:
-        vector <ofPoint> generateRandomPoints(int count, int seed, ofRectangle bounds);
+        vector <glm::vec3> generateRandomPoints(int count, int seed, ofRectangle bounds);
         ofxVoronoi voronoi;
-        vector<ofPoint> points;
+        vector<glm::vec3> points;
     
         bool isBorder(ofPoint _pt);
     
