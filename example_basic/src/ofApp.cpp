@@ -65,8 +65,8 @@ void ofApp::draw(){
 }
 
 //--------------------------------------------------------------
-vector <ofPoint> ofApp::generateRandomPoints(int count, int seed, ofRectangle bounds) {
-    vector <ofPoint> points;
+vector <glm::vec3> ofApp::generateRandomPoints(int count, int seed, ofRectangle bounds) {
+    vector <glm::vec3> points;
     ofSeedRandom(seed);
     
     for(int i=0; i<count; i++) {
